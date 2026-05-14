@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New User</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #E1EBF8;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .card {
+            background-color: #e6f0ff;
+            border-radius: 10px;
+            max-width: 1200px;
+            width: 100%;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: rgba(0, 0, 0, 0.87);
+        }
+        /* Grid System mimicking v-row/v-col */
+        
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px 10px -10px;
+            /* Negative margin for gutters */
+        }
+        
+        .col {
+            padding: 0 10px;
+            box-sizing: border-box;
+            margin-bottom: 1rem;
+        }
+        /* Column widths */
+        
+        .col-2 {
+            width: 16.66%;
+        }
+        
+        .col-3 {
+            width: 25%;
+        }
+        
+        .col-4 {
+            width: 33.33%;
+        }
+        
+        .col-5 {
+            width: 41.66%;
+        }
+        
+        .col-6 {
+            width: 50%;
+        }
+        
+        .col-12 {
+            width: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .col-2,
+            .col-3,
+            .col-4,
+            .col-5,
+            .col-6 {
+                width: 100%;
+            }
+        }
+        /* Form Inputs */
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-size: 0.75rem;
+            color: rgba(0, 0, 0, 0.6);
+            margin-bottom: 4px;
+            margin-left: 4px;
+        }
+        
+        input,
+        select,
+        textarea {
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            background-color: white;
+            outline: none;
+            transition: border 0.3s;
+            font-family: inherit;
+        }
+        
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #1976D2;
+        }
+        /* Section Divider */
+        
+        .divider {
+            height: 1px;
+            background-color: rgba(0, 0, 0, 0.12);
+            margin: 1.5rem 0;
+            width: 100%;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.87);
+            margin-bottom: 1rem;
+        }
+        /* Dynamic Row Styling */
+        
+        .dynamic-row {
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        /* Buttons */
+        
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0 16px;
+            height: 36px;
+            border-radius: 4px;
+            font-weight: 500;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: none;
+            letter-spacing: 0.08em;
+            transition: background 0.3s;
+        }
+        
+        .btn-text {
+            background: transparent;
+            color: #757575;
+        }
+        
+        .btn-text:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .btn-flat {
+            background: #000;
+            color: white;
+        }
+        
+        .btn-flat:hover {
+            opacity: 0.8;
+        }
+        
+        .btn-icon {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        
+        .btn-icon:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .text-grey {
+            color: #9e9e9e;
+        }
+        
+        .text-primary {
+            color: #1976D2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="card-title">Add New User</div>
+
+        <form id="personnelForm" onsubmit="return false;">
+
+            <div class="row">
+                <div class="col col-4">
+                    <div class="input-group">
+                        <label>First Name</label>
+                        <input type="text" id="firstName">
+                    </div>
+                </div>
+                <div class="col col-3">
+                    <div class="input-group">
+                        <label>Middle Name</label>
+                        <input type="text" id="middleName">
+                    </div>
+                </div>
+                <div class="col col-3">
+                    <div class="input-group">
+                        <label>Last Name</label>
+                        <input type="text" id="lastName">
+                    </div>
+                </div>
+                <div class="col col-2">
+                    <div class="input-group">
+                        <label>Suffix</label>
+                        <input type="text" id="suffix">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-6">
+                    <div class="input-group">
+                        <label>Username</label>
+                        <input type="text" id="username">
+                    </div>
+                </div>
+                <div class="col col-6">
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="password">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-6">
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="email">
+                    </div>
+                </div>
+                <div class="col col-6">
+                    <div class="input-group">
+                        <label>Contact Number</label>
+                        <input type="text" id="contactNumber">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-6">
+                    <div class="input-group">
+                        <label>Birthdate</label>
+                        <input type="date" id="birthdate">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-6">
+                    <div class="input-group">
+                        <label>Personnel Type</label>
+                        <select id="administrativeRole" onchange="handleRoleChange()">
+                            <option value="" disabled selected>Select Role</option>
+                            <option value="Teacher">Teacher</option>
+                            <option value="Dean">Dean</option>
+                            <option value="Coordinator">Coordinator</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col col-6" id="deanField" style="display: none;">
+                    <div class="input-group">
+                        <label>Department Handled</label>
+                        <select id="departmentHandled"></select>
+                    </div>
+                </div>
+
+                <div class="col col-6" id="coordinatorField" style="display: none;">
+                    <div class="input-group">
+                        <label>Assigned Subject</label>
+                        <select id="assignedSubject"></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-12">
+                    <div class="divider"></div>
+                    <div class="subtitle">Subject & Grade Assignments</div>
+                </div>
+            </div>
+
+            <div id="subjectRowsContainer">
+            </div>
+
+            <div id="rowTemplate" style="display: none;">
+                <div class="row dynamic-row subject-row-entry">
+                    <div class="col col-5">
+                        <div class="input-group">
+                            <label>Grade Level</label>
+                            <select class="grade-select input-field"></select>
+                        </div>
+                    </div>
+                    <div class="col col-5">
+                        <div class="input-group">
+                            <label>Subject</label>
+                            <select class="subject-select input-field"></select>
+                        </div>
+                    </div>
+                    <div class="col col-2" style="display: flex; align-items: center; justify-content: center; margin-top: 15px;">
+                        <button type="button" class="btn-icon remove-btn" onclick="removeRow(this)">
+                            <span class="mdi mdi-close-circle text-grey"></span>
+                        </button>
+                        <button type="button" class="btn-icon add-btn" onclick="addRow()">
+                            <span class="mdi mdi-plus-circle text-primary"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-4">
+                    <div class="input-group">
+                        <label>TIN</label>
+                        <input type="text" id="tinNumber">
+                    </div>
+                </div>
+                <div class="col col-4">
+                    <div class="input-group">
+                        <label>GSIS Number</label>
+                        <input type="text" id="gsisNumber">
+                    </div>
+                </div>
+                <div class="col col-4">
+                    <div class="input-group">
+                        <label>PHIC Number</label>
+                        <input type="text" id="phicNumber">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-4">
+                    <div class="input-group">
+                        <label>HDMF Number</label>
+                        <input type="text" id="hdmfNumber">
+                    </div>
+                </div>
+                <div class="col col-4">
+                    <div class="input-group">
+                        <label>Date of Appointment</label>
+                        <input type="date" id="dateOfAppointment">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-12">
+                    <div class="input-group">
+                        <label>Address</label>
+                        <textarea id="address" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="actions">
+            <button class="btn btn-text" onclick="goBack()">Cancel</button>
+            <button class="btn btn-flat" onclick="handleSave()">Save</button>
+        </div>
+    </div>

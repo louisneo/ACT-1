@@ -1,0 +1,210 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-logout:hover {
+            background: white;
+            color: #667eea;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .profile-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .profile-card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .info-row {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #666;
+        }
+        
+        .info-value {
+            color: #333;
+        }
+        
+        .badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+        
+        .badge-user {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .badge-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-expired {
+            background: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👤 User Dashboard</h1>
+            <a href="{% url 'logout' %}" class="btn btn-logout">Logout</a>
+        </div>
+        
+        <div class="content">
+            <div class="profile-card">
+                <h2>My Profile</h2>
+                
+                <div class="info-row">
+                    <div class="info-label">Full Name:</div>
+                    <div class="info-value">{{ employee.get_full_name }}</div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Username:</div>
+                    <div class="info-value">{{ employee.username }}</div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Email:</div>
+                    <div class="info-value">{{ employee.email }}</div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Contact Number:</div>
+                    <div class="info-value">{{ employee.contact_number|default:"N/A" }}</div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Position:</div>
+                    <div class="info-value">{{ employee.position|default:"N/A" }}</div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Role:</div>
+                    <div class="info-value"><span class="badge badge-user">{{ employee.get_role_display }}</span></div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Status:</div>
+                    <div class="info-value">
+                        {% if employee.is_active %}
+                            <span class="badge badge-active">Active</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Last Login:</div>
+                    <div class="info-value">
+                        {% if employee.last_login %}
+                            {{ employee.last_login|date:"F d, Y - H:i" }}
+                        {% else %}
+                            Never
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Password Status:</div>
+                    <div class="info-value">
+                        {% if employee.is_password_expired %}
+                            <span class="badge badge-expired">Expired</span>
+                            <br><small>Please contact admin to reset your password</small>
+                        {% else %}
+                            <span class="badge badge-active">Valid</span>
+                            {% if employee.days_until_password_expires %}
+                                <br><small>Expires in {{ employee.days_until_password_expires }} days</small>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

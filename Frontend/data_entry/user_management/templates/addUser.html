@@ -1,605 +1,405 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New User</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #E1EBF8;
-            margin: 0;
-            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-bottom: 2px solid #f0f0f0;
             display: flex;
-            justify-content: center;
-        }
-        
-        .card {
-            background-color: #e6f0ff;
-            border-radius: 10px;
-            max-width: 1200px;
-            width: 100%;
-            padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 1.5rem;
-            color: rgba(0, 0, 0, 0.87);
-        }
-        /* Grid System mimicking v-row/v-col */
-        
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            margin: 0 -10px 10px -10px;
-            /* Negative margin for gutters */
-        }
-        
-        .col {
-            padding: 0 10px;
-            box-sizing: border-box;
-            margin-bottom: 1rem;
-        }
-        /* Column widths */
-        
-        .col-2 {
-            width: 16.66%;
-        }
-        
-        .col-3 {
-            width: 25%;
-        }
-        
-        .col-4 {
-            width: 33.33%;
-        }
-        
-        .col-5 {
-            width: 41.66%;
-        }
-        
-        .col-6 {
-            width: 50%;
-        }
-        
-        .col-12 {
-            width: 100%;
-        }
-        
-        @media (max-width: 768px) {
-            .col-2,
-            .col-3,
-            .col-4,
-            .col-5,
-            .col-6 {
-                width: 100%;
-            }
-        }
-        /* Form Inputs */
-        
-        .input-group {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        label {
-            font-size: 0.75rem;
-            color: rgba(0, 0, 0, 0.6);
-            margin-bottom: 4px;
-            margin-left: 4px;
-        }
-        
-        input,
-        select,
-        textarea {
-            padding: 10px 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 1rem;
-            background-color: white;
-            outline: none;
-            transition: border 0.3s;
-            font-family: inherit;
-        }
-        
-        input:focus,
-        select:focus,
-        textarea:focus {
-            border-color: #1976D2;
-        }
-        /* Section Divider */
-        
-        .divider {
-            height: 1px;
-            background-color: rgba(0, 0, 0, 0.12);
-            margin: 1.5rem 0;
-            width: 100%;
-        }
-        
-        .subtitle {
-            font-size: 1rem;
-            font-weight: 500;
-            color: rgba(0, 0, 0, 0.87);
-            margin-bottom: 1rem;
-        }
-        /* Dynamic Row Styling */
-        
-        .dynamic-row {
-            background: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #dee2e6;
-            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 10px;
         }
-        /* Buttons */
         
-        .actions {
+        h1 {
+            color: #333;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .nav-links {
             display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 2rem;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: #666;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background: #f0f0f0;
+            color: #667eea;
+        }
+        
+        .form-container {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
         
         .btn {
-            padding: 0 16px;
-            height: 36px;
-            border-radius: 4px;
-            font-weight: 500;
-            text-transform: uppercase;
-            cursor: pointer;
+            padding: 12px 24px;
             border: none;
-            letter-spacing: 0.08em;
-            transition: background 0.3s;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
         }
         
-        .btn-text {
-            background: transparent;
-            color: #757575;
-        }
-        
-        .btn-text:hover {
-            background: rgba(0, 0, 0, 0.05);
-        }
-        
-        .btn-flat {
-            background: #000;
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
         
-        .btn-flat:hover {
-            opacity: 0.8;
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
         
-        .btn-icon {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 1.5rem;
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .alert {
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .form-actions {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            gap: 10px;
+            margin-top: 30px;
         }
         
-        .btn-icon:hover {
-            background-color: rgba(0, 0, 0, 0.05);
+        .password-requirements {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #666;
         }
         
-        .text-grey {
-            color: #9e9e9e;
+        .password-requirements h4 {
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 14px;
         }
         
-        .text-primary {
-            color: #1976D2;
+        .password-requirements ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .password-requirements li {
+            padding: 4px 0;
+        }
+        
+        .password-requirements li:before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .required {
+            color: #dc3545;
+        }
+        
+        .errorlist {
+            list-style: none;
+            padding: 0;
+            margin: 5px 0 0 0;
+        }
+        
+        .errorlist li {
+            color: #dc3545;
+            font-size: 13px;
         }
     </style>
 </head>
-
 <body>
-
-    <div class="card">
-        <div class="card-title">Add New User</div>
-
-        <form id="personnelForm" onsubmit="return false;">
-
-            <div class="row">
-                <div class="col col-4">
-                    <div class="input-group">
-                        <label>First Name</label>
-                        <input type="text" id="firstName">
+    <div class="container">
+        <div class="header">
+            <h1>Add New User</h1>
+            <div class="nav-links">
+                <a href="{% url 'home' %}">Users</a>
+                <a href="{% url 'password_policy' %}">Password Policy</a>
+            </div>
+        </div>
+        
+        <div class="form-container">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            {% if form.errors %}
+                <div class="alert alert-error">
+                    <h4>Form Errors:</h4>
+                    <ul>
+                        {% for field in form %}
+                            {% if field.errors %}
+                                <li><strong>{{ field.label }}:</strong>
+                                    <ul>
+                                        {% for error in field.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if form.non_field_errors %}
+                            <li><strong>General Errors:</strong>
+                                <ul>
+                                    {% for error in form.non_field_errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endif %}
+            
+            <form method="POST" novalidate>
+                {% csrf_token %}
+                
+                <h3 style="margin-bottom: 20px; color: #333;">Personal Information</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.first_name.id_for_label }}">First Name <span class="required">*</span></label>
+                        {{ form.first_name }}
+                        {{ form.first_name.errors }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.middle_name.id_for_label }}">Middle Name</label>
+                        {{ form.middle_name }}
+                        {{ form.middle_name.errors }}
                     </div>
                 </div>
-                <div class="col col-3">
-                    <div class="input-group">
-                        <label>Middle Name</label>
-                        <input type="text" id="middleName">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.last_name.id_for_label }}">Last Name <span class="required">*</span></label>
+                        {{ form.last_name }}
+                        {{ form.last_name.errors }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.suffix.id_for_label }}">Suffix</label>
+                        {{ form.suffix }}
+                        {{ form.suffix.errors }}
                     </div>
                 </div>
-                <div class="col col-3">
-                    <div class="input-group">
-                        <label>Last Name</label>
-                        <input type="text" id="lastName">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.birthdate.id_for_label }}">Birthdate</label>
+                        {{ form.birthdate }}
+                        {{ form.birthdate.errors }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.contact_number.id_for_label }}">Contact Number</label>
+                        {{ form.contact_number }}
+                        {{ form.contact_number.errors }}
                     </div>
                 </div>
-                <div class="col col-2">
-                    <div class="input-group">
-                        <label>Suffix</label>
-                        <input type="text" id="suffix">
+                
+                <div class="form-group">
+                    <label for="{{ form.address.id_for_label }}">Address</label>
+                    {{ form.address }}
+                    {{ form.address.errors }}
+                </div>
+                
+                <h3 style="margin: 30px 0 20px; color: #333;">Account Information</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.username.id_for_label }}">Username <span class="required">*</span></label>
+                        {{ form.username }}
+                        {{ form.username.errors }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.email.id_for_label }}">Email <span class="required">*</span></label>
+                        {{ form.email }}
+                        {{ form.email.errors }}
                     </div>
                 </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.position.id_for_label }}">Position</label>
+                        {{ form.position }}
+                        {{ form.position.errors }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.role.id_for_label }}">Role <span class="required">*</span></label>
+                        {{ form.role }}
+                        {{ form.role.errors }}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">Password <span class="required">*</span></label>
+                <div style="position: relative;">
+                    {{ form.password }}
+                    <button type="button" onclick="togglePassword('id_password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 18px;">
+                        👁️
+                    </button>
+                </div>
+                {{ form.password.errors }}
+                
+                {% if policy %}
+                <div class="password-requirements">
+                    <h4>Password Requirements:</h4>
+                    <ul>
+                        <li>Minimum length: {{ policy.min_length }} characters</li>
+                        {% if policy.require_uppercase %}
+                        <li>At least one uppercase letter</li>
+                        {% endif %}
+                        {% if policy.require_lowercase %}
+                        <li>At least one lowercase letter</li>
+                        {% endif %}
+                        {% if policy.require_numbers %}
+                        <li>At least one number</li>
+                        {% endif %}
+                        {% if policy.require_special_chars %}
+                        <li>At least one special character</li>
+                        {% endif %}
+                        {% if policy.prevent_common_passwords %}
+                        <li>Cannot use common passwords</li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% endif %}
             </div>
 
-            <div class="row">
-                <div class="col col-6">
-                    <div class="input-group">
-                        <label>Username</label>
-                        <input type="text" id="username">
-                    </div>
+            <div class="form-group">
+                <label for="{{ form.confirm_password.id_for_label }}">Confirm Password <span class="required">*</span></label>
+                <div style="position: relative;">
+                    {{ form.confirm_password }}
+                    <button type="button" onclick="togglePassword('id_confirm_password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 18px;">
+                        👁️
+                    </button>
                 </div>
-                <div class="col col-6">
-                    <div class="input-group">
-                        <label>Password</label>
-                        <input type="password" id="password">
-                    </div>
-                </div>
+                {{ form.confirm_password.errors }}
             </div>
-
-            <div class="row">
-                <div class="col col-6">
-                    <div class="input-group">
-                        <label>Email</label>
-                        <input type="email" id="email">
-                    </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Create User</button>
+                    <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
                 </div>
-                <div class="col col-6">
-                    <div class="input-group">
-                        <label>Contact Number</label>
-                        <input type="text" id="contactNumber">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col col-6">
-                    <div class="input-group">
-                        <label>Birthdate</label>
-                        <input type="date" id="birthdate">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col col-6">
-                    <div class="input-group">
-                        <label>Personnel Type</label>
-                        <select id="administrativeRole" onchange="handleRoleChange()">
-                            <option value="" disabled selected>Select Role</option>
-                            <option value="Teacher">Teacher</option>
-                            <option value="Dean">Dean</option>
-                            <option value="Coordinator">Coordinator</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="col col-6" id="deanField" style="display: none;">
-                    <div class="input-group">
-                        <label>Department Handled</label>
-                        <select id="departmentHandled"></select>
-                    </div>
-                </div>
-
-                <div class="col col-6" id="coordinatorField" style="display: none;">
-                    <div class="input-group">
-                        <label>Assigned Subject</label>
-                        <select id="assignedSubject"></select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col col-12">
-                    <div class="divider"></div>
-                    <div class="subtitle">Subject & Grade Assignments</div>
-                </div>
-            </div>
-
-            <div id="subjectRowsContainer">
-            </div>
-
-            <div id="rowTemplate" style="display: none;">
-                <div class="row dynamic-row subject-row-entry">
-                    <div class="col col-5">
-                        <div class="input-group">
-                            <label>Grade Level</label>
-                            <select class="grade-select input-field"></select>
-                        </div>
-                    </div>
-                    <div class="col col-5">
-                        <div class="input-group">
-                            <label>Subject</label>
-                            <select class="subject-select input-field"></select>
-                        </div>
-                    </div>
-                    <div class="col col-2" style="display: flex; align-items: center; justify-content: center; margin-top: 15px;">
-                        <button type="button" class="btn-icon remove-btn" onclick="removeRow(this)">
-                            <span class="mdi mdi-close-circle text-grey"></span>
-                        </button>
-                        <button type="button" class="btn-icon add-btn" onclick="addRow()">
-                            <span class="mdi mdi-plus-circle text-primary"></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col col-4">
-                    <div class="input-group">
-                        <label>TIN</label>
-                        <input type="text" id="tinNumber">
-                    </div>
-                </div>
-                <div class="col col-4">
-                    <div class="input-group">
-                        <label>GSIS Number</label>
-                        <input type="text" id="gsisNumber">
-                    </div>
-                </div>
-                <div class="col col-4">
-                    <div class="input-group">
-                        <label>PHIC Number</label>
-                        <input type="text" id="phicNumber">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col col-4">
-                    <div class="input-group">
-                        <label>HDMF Number</label>
-                        <input type="text" id="hdmfNumber">
-                    </div>
-                </div>
-                <div class="col col-4">
-                    <div class="input-group">
-                        <label>Date of Appointment</label>
-                        <input type="date" id="dateOfAppointment">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col col-12">
-                    <div class="input-group">
-                        <label>Address</label>
-                        <textarea id="address" rows="3"></textarea>
-                    </div>
-                </div>
-            </div>
-
-        </form>
-
-        <div class="actions">
-            <button class="btn btn-text" onclick="goBack()">Cancel</button>
-            <button class="btn btn-flat" onclick="handleSave()">Save</button>
+            </form>
         </div>
     </div>
 
     <script>
-        // --- Global Data Stores ---
-        let globalSubjects = []; // Holds list of {subject: "Math", subject_id: 1}
-        let globalGrades = []; // Holds list of {grade_level: "Grade 1", grade_level_id: 1}
-
-        // --- Initialization ---
-        window.onload = async function() {
-            await fetchSubjects();
-            await fetchGrades();
-            addRow(); // Add the initial subject/grade row
-        };
-
-        function goBack() {
-            window.history.back(); // Or window.location.href = 'index.html';
-        }
-
-        // --- API Fetching ---
-        async function fetchSubjects() {
-            try {
-                const response = await axios.post('http://localhost/Central-Api/api/endpoints/readSubject.php');
-                globalSubjects = response.data.data || [];
-
-                // Populate Coordinator Dropdown
-                const coordSelect = document.getElementById('assignedSubject');
-                coordSelect.innerHTML = '<option value="">Select Subject</option>';
-                globalSubjects.forEach(item => {
-                    coordSelect.innerHTML += `<option value="${item.subject}">${item.subject}</option>`;
-                });
-
-            } catch (error) {
-                console.error("Error fetching subjects:", error);
-            }
-        }
-
-        async function fetchGrades() {
-            try {
-                const response = await axios.post('http://localhost/Central-Api/api/endpoints/readGradeLevel.php');
-                globalGrades = response.data.data || [];
-
-                // Populate Dean Dropdown (Department Handled)
-                const deanSelect = document.getElementById('departmentHandled');
-                deanSelect.innerHTML = '<option value="">Select Department/Grade</option>';
-                globalGrades.forEach(item => {
-                    deanSelect.innerHTML += `<option value="${item.grade_level}">${item.grade_level}</option>`;
-                });
-
-            } catch (error) {
-                console.error("Error fetching grades:", error);
-            }
-        }
-
-        // --- UI Logic ---
-        function handleRoleChange() {
-            const role = document.getElementById('administrativeRole').value;
-            const deanField = document.getElementById('deanField');
-            const coordField = document.getElementById('coordinatorField');
-
-            deanField.style.display = (role === 'Dean') ? 'block' : 'none';
-            coordField.style.display = (role === 'Coordinator') ? 'block' : 'none';
-        }
-
-        function addRow() {
-            const container = document.getElementById('subjectRowsContainer');
-            const template = document.getElementById('rowTemplate').firstElementChild.cloneNode(true);
-
-            // Populate Selects in the new row
-            const gradeSelect = template.querySelector('.grade-select');
-            const subjectSelect = template.querySelector('.subject-select');
-
-            gradeSelect.innerHTML = '<option value="">Select Grade</option>';
-            globalGrades.forEach(g => {
-                gradeSelect.innerHTML += `<option value="${g.grade_level}">${g.grade_level}</option>`;
-            });
-
-            subjectSelect.innerHTML = '<option value="">Select Subject</option>';
-            globalSubjects.forEach(s => {
-                subjectSelect.innerHTML += `<option value="${s.subject}">${s.subject}</option>`;
-            });
-
-            container.appendChild(template);
-            updateButtons();
-        }
-
-        function removeRow(btn) {
-            const rows = document.querySelectorAll('.subject-row-entry');
-            if (rows.length > 1) {
-                btn.closest('.subject-row-entry').remove();
-            }
-            updateButtons();
-        }
-
-        function updateButtons() {
-            // Logic to maybe disable the remove button if only 1 row exists?
-            // Current design allows clicking but check handles not removing if count is 1
-        }
-
-        // --- Save Logic ---
-        async function handleSave() {
-            // 1. Collect Basic Data
-            const form = {
-                firstName: document.getElementById('firstName').value,
-                middleName: document.getElementById('middleName').value,
-                lastName: document.getElementById('lastName').value,
-                suffix: document.getElementById('suffix').value,
-                username: document.getElementById('username').value,
-                password: document.getElementById('password').value,
-                email: document.getElementById('email').value,
-                contactNumber: document.getElementById('contactNumber').value,
-                birthdate: document.getElementById('birthdate').value,
-                administrativeRole: document.getElementById('administrativeRole').value,
-                tinNumber: document.getElementById('tinNumber').value,
-                GSISNumber: document.getElementById('gsisNumber').value,
-                PHICNumber: document.getElementById('phicNumber').value,
-                hdmfNumber: document.getElementById('hdmfNumber').value,
-                date_of_appointment: document.getElementById('dateOfAppointment').value,
-                address: document.getElementById('address').value,
-                isActive: true,
-                // Specifics
-                department_handled: document.getElementById('departmentHandled').value,
-                assignedSubject: document.getElementById('assignedSubject').value // mapped to subject_handled in API
-            };
-
-            // 2. Collect Subject/Grade Rows
-            const rowElements = document.querySelectorAll('.subject-row-entry');
-            const subjectsList = [];
-            rowElements.forEach(row => {
-                const grade = row.querySelector('.grade-select').value;
-                const subject = row.querySelector('.subject-select').value;
-                if (grade && subject) {
-                    subjectsList.push({
-                        grade,
-                        subject
-                    });
-                }
-            });
-
-            // 3. Validation
-            if (!form.firstName || !form.lastName || !form.username || !form.password || !form.email) {
-                alert('Please fill out all required fields: Name, Username, Password, Email.');
-                return;
-            }
-
-            if (form.administrativeRole === 'Dean' && !form.department_handled) {
-                alert('Please select a department for the Dean.');
-                return;
-            }
-            if (form.administrativeRole === 'Coordinator' && !form.assignedSubject) {
-                alert('Please select a subject for the Coordinator.');
-                return;
-            }
-            if (form.administrativeRole === 'Teacher' && subjectsList.length === 0) {
-                alert('Please assign at least one subject and grade level for a Teacher.');
-                return;
-            }
-
-            // 4. Route to specific function
-            if (form.administrativeRole === 'Dean') {
-                await submitData('addDean.php', form, subjectsList);
-            } else if (form.administrativeRole === 'Coordinator') {
-                form.subject_handled = form.assignedSubject; // Rename key for API
-                await submitData('addCoordinator.php', form, subjectsList);
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const button = event.currentTarget;
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                button.textContent = '🙈';
             } else {
-                await submitData('addPersonnel.php', form, subjectsList);
-            }
-        }
-
-        async function submitData(endpoint, formData, subjectsList) {
-            try {
-                // A. Create User
-                const response = await axios.post(`http://localhost/Central-Api/api/endpoints/${endpoint}`, formData);
-
-                const personnel_id = response.data.personnel_id;
-                if (!personnel_id) throw new Error('Failed to retrieve personnel_id.');
-
-                console.log('Created ID:', personnel_id);
-
-                // B. Add Load Assignments (Only if subjects exist)
-                if (subjectsList.length > 0) {
-                    for (const entry of subjectsList) {
-                        const subjectMatch = globalSubjects.find(s => s.subject === entry.subject);
-                        const gradeMatch = globalGrades.find(g => g.grade_level === entry.grade);
-
-                        if (subjectMatch && gradeMatch) {
-                            await axios.post('http://localhost/Central-Api/api/endpoints/addLoadAssignment.php', {
-                                personnel_id: personnel_id,
-                                subject_id: subjectMatch.subject_id,
-                                grade_level_id: gradeMatch.grade_level_id
-                            });
-                        }
-                    }
-                }
-
-                alert('User added successfully!');
-                goBack();
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error adding Personnel: ' + (error.message || 'Unknown Error'));
+                field.type = 'password';
+                button.textContent = '👁️';
             }
         }
     </script>
-
 </body>
-
 </html>
