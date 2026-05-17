@@ -40,7 +40,7 @@ class EmployeeAdmin(admin.ModelAdmin):
     list_display = ['id', 'username', 'get_full_name', 'email', 'role', 'is_active', 'last_login', 'created_at']
     list_filter = ['role', 'is_active', 'account_locked', 'created_at']
     search_fields = ['username', 'first_name', 'last_name', 'email']
-    readonly_fields = ['last_login', 'last_password_update', 'created_at', 'updated_at']
+    readonly_fields = ['masked_password', 'last_login', 'last_password_update', 'created_at', 'updated_at']
     
     fieldsets = (
         ('Personal Information', {
@@ -50,7 +50,7 @@ class EmployeeAdmin(admin.ModelAdmin):
             'fields': ('email', 'contact_number')
         }),
         ('Account Information', {
-            'fields': ('username', 'password', 'role', 'position')
+            'fields': ('username', 'masked_password', 'password', 'role', 'position')
         }),
         ('Security', {
             'fields': ('last_login', 'last_password_update', 'password_expiry_days', 
@@ -61,6 +61,12 @@ class EmployeeAdmin(admin.ModelAdmin):
         }),
     )
     actions = ['send_password_reset_email']
+
+    def masked_password(self, obj):
+        if not obj or not getattr(obj, 'password', None):
+            return 'Not set'
+        return '•' * 8
+    masked_password.short_description = 'Password (masked)'
 
     def send_password_reset_email(self, request, queryset):
         sent = 0

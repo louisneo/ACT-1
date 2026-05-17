@@ -17,6 +17,8 @@ urlpatterns = [
     
     # User pages
     path('dashboard/', views.user_dashboard, name='user_dashboard'),
+    path('profile/', views.edit_profile, name='edit_profile'),
+    path('change-password/', views.change_password, name='change_password'),
 
     # Password reset (employee-facing)
     path('password-reset/', auth_views.PasswordResetView.as_view(template_name='registration/password_reset_form.html'), name='password_reset'),

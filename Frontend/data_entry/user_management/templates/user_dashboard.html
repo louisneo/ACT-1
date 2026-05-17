@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>Dashboard - User Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,197 +14,604 @@
         }
         
         body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fa;
+            height: 100vh;
             overflow: hidden;
         }
         
-        .header {
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 20px 30px;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow-y: auto;
+        }
+        
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .logo-icon {
+            font-size: 32px;
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .user-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .user-role {
+            font-size: 12px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .nav-menu {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .nav-item {
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            border-left: 3px solid white;
+            padding-left: 12px;
+        }
+        
+        .nav-item-icon {
+            font-size: 18px;
+            width: 20px;
+        }
+        
+        .sidebar-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        
+        .logout-btn {
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            transition: all 0.3s;
+            width: 100%;
+            justify-content: flex-start;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(220, 53, 69, 0.8);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .top-bar {
+            background: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
-        h1 {
-            font-size: 28px;
-            font-weight: 600;
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
         }
         
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s;
+        .top-bar-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
         }
         
-        .btn-logout {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid white;
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
         }
         
-        .btn-logout:hover {
+        .content-area::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .content-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .content-area::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+        
+        /* Cards & Sections */
+        .card {
             background: white;
-            color: #667eea;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            padding: 30px;
+            margin-bottom: 25px;
         }
         
-        .content {
-            padding: 30px;
+        .card-header {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
         }
         
-        .profile-card {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 8px;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
             margin-bottom: 30px;
         }
         
-        .profile-card h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 24px;
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
         }
         
-        .info-row {
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+        
+        /* Profile Section */
+        .profile-grid {
             display: grid;
-            grid-template-columns: 200px 1fr;
-            padding: 12px 0;
-            border-bottom: 1px solid #e0e0e0;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
         }
         
-        .info-row:last-child {
-            border-bottom: none;
+        .profile-item {
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f8f9fa;
         }
         
-        .info-label {
+        .profile-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
             font-weight: 600;
-            color: #666;
         }
         
-        .info-value {
+        .profile-value {
+            font-size: 15px;
             color: #333;
+            font-weight: 500;
+        }
+        
+        .profile-value.masked {
+            color: #667eea;
+            font-family: 'Courier New', monospace;
         }
         
         .badge {
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 11px;
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
-            display: inline-block;
+            letter-spacing: 0.5px;
         }
         
-        .badge-user {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-        
-        .badge-active {
+        .badge-success {
             background: #d4edda;
             color: #155724;
         }
         
-        .badge-expired {
+        .badge-warning {
             background: #fff3cd;
             color: #856404;
+        }
+        
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        /* Alert */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                padding: 15px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+            
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .logo {
+                margin-bottom: 0;
+                padding-bottom: 0;
+                border-bottom: none;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .sidebar-footer {
+                display: none;
+            }
+            
+            .top-bar {
+                padding: 15px 20px;
+            }
+            
+            .content-area {
+                padding: 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>👤 User Dashboard</h1>
-            <a href="{% url 'logout' %}" class="btn btn-logout">Logout</a>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">👥</div>
+                <div class="logo-text">SecureEM</div>
+            </div>
+            
+            <div class="user-info">
+                <div class="user-avatar">👤</div>
+                <div class="user-name">{{ employee.get_full_name }}</div>
+                <div class="user-role">{{ employee.get_role_display }}</div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="{% url 'user_dashboard' %}" class="nav-item active">
+                    <span class="nav-item-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{% url 'edit_profile' %}" class="nav-item">
+                    <span class="nav-item-icon">📋</span>
+                    <span>My Profile</span>
+                </a>
+                <a href="{% url 'change_password' %}" class="nav-item">
+                    <span class="nav-item-icon">🔐</span>
+                    <span>Change Password</span>
+                </a>
+                <a href="{% url 'password_reset' %}" class="nav-item">
+                    <span class="nav-item-icon">🔑</span>
+                    <span>Reset Password</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="{% url 'logout' %}" class="logout-btn">
+                    <span style="font-size: 16px;">🚪</span>
+                    <span>Logout</span>
+                </a>
+            </div>
         </div>
         
-        <div class="content">
-            <div class="profile-card">
-                <h2>My Profile</h2>
-                
-                <div class="info-row">
-                    <div class="info-label">Full Name:</div>
-                    <div class="info-value">{{ employee.get_full_name }}</div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <div class="page-title">Welcome back! 👋</div>
+                <div class="top-bar-right">
+                    <span style="color: #999; font-size: 13px;" id="currentTime"></span>
                 </div>
+            </div>
+            
+            <div class="content-area">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            <span>ℹ️</span>
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
                 
-                <div class="info-row">
-                    <div class="info-label">Username:</div>
-                    <div class="info-value">{{ employee.username }}</div>
-                </div>
-                
-                <div class="info-row">
-                    <div class="info-label">Email:</div>
-                    <div class="info-value">{{ employee.email }}</div>
-                </div>
-                
-                <div class="info-row">
-                    <div class="info-label">Contact Number:</div>
-                    <div class="info-value">{{ employee.contact_number|default:"N/A" }}</div>
-                </div>
-                
-                <div class="info-row">
-                    <div class="info-label">Position:</div>
-                    <div class="info-value">{{ employee.position|default:"N/A" }}</div>
-                </div>
-                
-                <div class="info-row">
-                    <div class="info-label">Role:</div>
-                    <div class="info-value"><span class="badge badge-user">{{ employee.get_role_display }}</span></div>
-                </div>
-                
-                <div class="info-row">
-                    <div class="info-label">Status:</div>
-                    <div class="info-value">
-                        {% if employee.is_active %}
-                            <span class="badge badge-active">Active</span>
-                        {% endif %}
-                    </div>
-                </div>
-                
-                <div class="info-row">
-                    <div class="info-label">Last Login:</div>
-                    <div class="info-value">
-                        {% if employee.last_login %}
-                            {{ employee.last_login|date:"F d, Y - H:i" }}
-                        {% else %}
-                            Never
-                        {% endif %}
-                    </div>
-                </div>
-                
-                <div class="info-row">
-                    <div class="info-label">Password Status:</div>
-                    <div class="info-value">
-                        {% if employee.is_password_expired %}
-                            <span class="badge badge-expired">Expired</span>
-                            <br><small>Please contact admin to reset your password</small>
-                        {% else %}
-                            <span class="badge badge-active">Valid</span>
-                            {% if employee.days_until_password_expires %}
-                                <br><small>Expires in {{ employee.days_until_password_expires }} days</small>
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Status</div>
+                        <div class="stat-value" style="font-size: 18px;">
+                            {% if employee.is_active %}
+                                <span class="badge badge-success">Active</span>
+                            {% else %}
+                                <span class="badge badge-danger">Inactive</span>
                             {% endif %}
-                        {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-label">Password Status</div>
+                        <div class="stat-value" style="font-size: 18px;">
+                            {% if employee.is_password_expired %}
+                                <span class="badge badge-danger">Expired</span>
+                            {% else %}
+                                <span class="badge badge-success">Valid</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-label">Account Lock</div>
+                        <div class="stat-value" style="font-size: 18px;">
+                            {% if employee.is_locked %}
+                                <span class="badge badge-danger">Locked</span>
+                            {% else %}
+                                <span class="badge badge-success">Unlocked</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-label">Password Expires In</div>
+                        <div class="stat-value">
+                            {% if employee.days_until_password_expires %}
+                                {{ employee.days_until_password_expires }} days
+                            {% else %}
+                                Never
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Card -->
+                <div class="card">
+                    <div class="card-header">👤 My Profile</div>
+                    
+                    <div class="profile-grid">
+                        <div class="profile-item">
+                            <div class="profile-label">Full Name</div>
+                            <div class="profile-value">{{ employee.get_full_name }}</div>
+                        </div>
+                        
+                        <div class="profile-item">
+                            <div class="profile-label">Username</div>
+                            <div class="profile-value">{{ employee.username }}</div>
+                        </div>
+                        
+                        <div class="profile-item">
+                            <div class="profile-label">Email</div>
+                            <div class="profile-value masked">{{ employee.masked_email }}</div>
+                        </div>
+                        
+                        <div class="profile-item">
+                            <div class="profile-label">Contact Number</div>
+                            <div class="profile-value masked">{{ employee.masked_contact|default:"N/A" }}</div>
+                        </div>
+                        
+                        <div class="profile-item">
+                            <div class="profile-label">Position</div>
+                            <div class="profile-value">{{ employee.position|default:"N/A" }}</div>
+                        </div>
+                        
+                        <div class="profile-item">
+                            <div class="profile-label">Role</div>
+                            <div class="profile-value">{{ employee.get_role_display }}</div>
+                        </div>
+                        
+                        <div class="profile-item">
+                            <div class="profile-label">Birth Date</div>
+                            <div class="profile-value">{{ employee.birthdate|date:"F d, Y"|default:"N/A" }}</div>
+                        </div>
+                        
+                        <div class="profile-item">
+                            <div class="profile-label">Last Login</div>
+                            <div class="profile-value">
+                                {% if employee.last_login %}
+                                    {{ employee.last_login|date:"F d, Y H:i" }}
+                                {% else %}
+                                    <span style="color: #999;">Never</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="profile-item">
+                            <div class="profile-label">Member Since</div>
+                            <div class="profile-value">{{ employee.created_at|date:"F d, Y" }}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Security Info -->
+                <div class="card">
+                    <div class="card-header">🔒 Security Information</div>
+                    
+                    <div class="profile-grid">
+                        <div class="profile-item">
+                            <div class="profile-label">Password Last Updated</div>
+                            <div class="profile-value">{{ employee.last_password_update|date:"F d, Y H:i" }}</div>
+                        </div>
+                        
+                        <div class="profile-item">
+                            <div class="profile-label">Failed Login Attempts</div>
+                            <div class="profile-value">{{ employee.failed_login_attempts }}/5</div>
+                        </div>
+                        
+                        <div class="profile-item">
+                            <div class="profile-label">Account Status</div>
+                            <div class="profile-value">
+                                {% if employee.is_active %}
+                                    <span class="badge badge-success">Active & Enabled</span>
+                                {% else %}
+                                    <span class="badge badge-danger">Deactivated</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="profile-item">
+                            <div class="profile-label">Password Policy Status</div>
+                            <div class="profile-value">
+                                {% if employee.is_password_expired %}
+                                    <span class="badge badge-danger">Expired - Update Required</span>
+                                {% else %}
+                                    <span class="badge badge-success">Compliant</span>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <script>
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            document.getElementById('currentTime').textContent = now.toLocaleDateString('en-US', options);
+        }
+        updateTime();
+        setInterval(updateTime, 60000);
+    </script>
 </body>
 </html>

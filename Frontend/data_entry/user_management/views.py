@@ -2,9 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.utils import timezone
 from user_management.models import Employee, PasswordPolicy, PasswordHistory
 from user_management.forms import EmployeeForm, EmployeeEditForm, PasswordPolicyForm
 from django.db.models import Q
+from .utils import role_required, mask_email, mask_phone
 
 
 # ============= AUTHENTICATION VIEWS =============
@@ -67,24 +69,99 @@ def user_dashboard(request):
         return redirect('login')
     
     employee = get_object_or_404(Employee, id=request.session['employee_id'])
-    
+    # Mask sensitive contact info for display (information coating)
+    employee.masked_email = mask_email(employee.email)
+    employee.masked_contact = mask_phone(employee.contact_number)
+
     context = {
         'employee': employee,
     }
     return render(request, 'user_dashboard.html', context)
 
 
-# ============= ADMIN VIEWS =============
-
-def home(request):
-    """Display all active and deactivated employees - Admin only"""
+def edit_profile(request):
+    """Allow employees to edit their own profile"""
     if 'employee_id' not in request.session:
         return redirect('login')
     
-    current_user = Employee.objects.get(id=request.session['employee_id'])
-    if current_user.role not in ['admin', 'global_admin']:
-        messages.error(request, 'You do not have permission to access this page.')
+    employee = get_object_or_404(Employee, id=request.session['employee_id'])
+    
+    if request.method == 'POST':
+        form = EmployeeEditForm(request.POST, instance=employee)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('user_dashboard')
+    else:
+        form = EmployeeEditForm(instance=employee)
+    
+    context = {
+        'form': form,
+        'employee': employee,
+        'page_title': 'Edit Profile'
+    }
+    return render(request, 'editUser.html', context)
+
+
+def change_password(request):
+    """Allow employees to change their own password"""
+    if 'employee_id' not in request.session:
+        return redirect('login')
+    
+    employee = get_object_or_404(Employee, id=request.session['employee_id'])
+    
+    if request.method == 'POST':
+        old_password = request.POST.get('old_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        # Validate old password
+        if not employee.check_password(old_password):
+            messages.error(request, 'Current password is incorrect!')
+            return render(request, 'change_password.html', {'employee': employee})
+        
+        # Validate new passwords match
+        if new_password != confirm_password:
+            messages.error(request, 'New passwords do not match!')
+            return render(request, 'change_password.html', {'employee': employee})
+        
+        # Validate password policy
+        policy = PasswordPolicy.get_current_policy()
+        password_errors = policy.validate_password(new_password)
+        
+        if password_errors:
+            for error in password_errors:
+                messages.error(request, error)
+            return render(request, 'change_password.html', {'employee': employee})
+        
+        # Change password
+        employee.set_password(new_password)
+        employee.last_password_update = timezone.now()
+        employee.failed_login_attempts = 0  # Reset failed attempts
+        employee.save()
+        
+        # Log password history
+        PasswordHistory.objects.create(
+            employee=employee,
+            change_type='employee_change'
+        )
+        
+        messages.success(request, 'Password changed successfully!')
         return redirect('user_dashboard')
+    
+    context = {
+        'employee': employee,
+        'page_title': 'Change Password'
+    }
+    return render(request, 'change_password.html', context)
+
+
+# ============= ADMIN VIEWS =============
+
+@role_required(['admin', 'global_admin'])
+def home(request):
+    """Display all active and deactivated employees - Admin only"""
+    current_user = Employee.objects.get(id=request.session['employee_id'])
     
     search_query = request.GET.get('search', '')
     
@@ -120,15 +197,9 @@ def home(request):
     return render(request, 'home.html', context)
 
 
+@role_required(['admin', 'global_admin'])
 def addUser(request):
     """Add new employee with password policy validation - Admin only"""
-    if 'employee_id' not in request.session:
-        return redirect('login')
-    
-    current_user = Employee.objects.get(id=request.session['employee_id'])
-    if current_user.role not in ['admin', 'global_admin']:
-        messages.error(request, 'You do not have permission to access this page.')
-        return redirect('user_dashboard')
     
     policy = PasswordPolicy.get_current_policy()
     
@@ -214,15 +285,9 @@ def addUser(request):
     })
 
 
+@role_required(['admin', 'global_admin'])
 def editUser(request, user_id):
     """Edit existing employee - Admin only"""
-    if 'employee_id' not in request.session:
-        return redirect('login')
-    
-    current_user = Employee.objects.get(id=request.session['employee_id'])
-    if current_user.role not in ['admin', 'global_admin']:
-        messages.error(request, 'You do not have permission to access this page.')
-        return redirect('user_dashboard')
     
     employee = get_object_or_404(Employee, id=user_id)
     policy = PasswordPolicy.get_current_policy()
@@ -281,6 +346,7 @@ def editUser(request, user_id):
 
 
 @require_http_methods(["POST"])
+@role_required(['admin', 'global_admin'])
 def deleteUser(request, user_id):
     """Soft delete (deactivate) user - Admin only"""
     if 'employee_id' not in request.session:
@@ -316,6 +382,7 @@ def deleteUser(request, user_id):
 
 
 @require_http_methods(["POST"])
+@role_required(['admin', 'global_admin'])
 def activateUser(request, user_id):
     """Reactivate deactivated user - Admin only"""
     if 'employee_id' not in request.session:
@@ -348,15 +415,9 @@ def activateUser(request, user_id):
     return redirect('home')
 
 
+@role_required(['admin', 'global_admin'])
 def passwordPolicy(request):
     """Manage password policy settings - Admin only"""
-    if 'employee_id' not in request.session:
-        return redirect('login')
-    
-    current_user = Employee.objects.get(id=request.session['employee_id'])
-    if current_user.role not in ['admin', 'global_admin']:
-        messages.error(request, 'You do not have permission to access this page.')
-        return redirect('user_dashboard')
     
     policy = PasswordPolicy.get_current_policy()
     
@@ -409,8 +470,9 @@ def api_get_employees(request):
             'last_name': emp.last_name,
             'suffix': emp.suffix or '',
             'username': emp.username,
-            'email': emp.email,
-            'contact_number': emp.contact_number or '',
+            # Mask sensitive contact info (information coating)
+            'email': mask_email(emp.email),
+            'contact_number': mask_phone(emp.contact_number) or '',
             'position': emp.position or '',
             'role': emp.get_role_display(),
             'role_value': emp.role,
@@ -443,8 +505,9 @@ def api_get_employee(request, user_id):
         'last_name': employee.last_name,
         'suffix': employee.suffix or '',
         'username': employee.username,
-        'email': employee.email,
-        'contact_number': employee.contact_number or '',
+        # Mask contact details for API consumers
+        'email': mask_email(employee.email),
+        'contact_number': mask_phone(employee.contact_number) or '',
         'position': employee.position or '',
         'role': employee.role,
         'birthdate': employee.birthdate.strftime('%Y-%m-%d') if employee.birthdate else '',

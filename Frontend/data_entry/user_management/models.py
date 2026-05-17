@@ -173,6 +173,14 @@ class Employee(models.Model):
             return max(0, days_left)
         return None
 
+    def get_password_hash_info(self):
+        """Return metadata about the stored password hash (algorithm)."""
+        if not self.password:
+            return None
+        # Django stores hashes like: algorithm$iterations$salt$hash
+        parts = self.password.split('$')
+        return {'algorithm': parts[0] if parts else None}
+
 
 class PasswordHistory(models.Model):
     """Track password history to prevent reuse"""
